@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Model" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+  <EntityContainer Name="ModelContainer" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Agences" EntityType="Model.Agence" />
+    <EntitySet Name="Reservations" EntityType="Model.Reservation" />
+    <EntitySet Name="Marques" EntityType="Model.Marque" />
+    <EntitySet Name="Locations" EntityType="Model.Location" />
+    <EntitySet Name="Clients" EntityType="Model.Client" />
+    <EntitySet Name="Voitures" EntityType="Model.Voiture" />
+    <EntitySet Name="Series" EntityType="Model.Serie" />
+    <AssociationSet Name="AgenceVoiture" Association="Model.AgenceVoiture">
+      <End Role="Agence" EntitySet="Agences" />
+      <End Role="Voiture" EntitySet="Voitures" />
+    </AssociationSet>
+    <AssociationSet Name="VoitureSerie" Association="Model.VoitureSerie">
+      <End Role="Voiture" EntitySet="Voitures" />
+      <End Role="Serie" EntitySet="Series" />
+    </AssociationSet>
+    <AssociationSet Name="SerieMarque" Association="Model.SerieMarque">
+      <End Role="Serie" EntitySet="Series" />
+      <End Role="Marque" EntitySet="Marques" />
+    </AssociationSet>
+    <AssociationSet Name="ReservationVoiture" Association="Model.ReservationVoiture">
+      <End Role="Reservation" EntitySet="Reservations" />
+      <End Role="Voiture" EntitySet="Voitures" />
+    </AssociationSet>
+    <AssociationSet Name="LocationReservation" Association="Model.LocationReservation">
+      <End Role="Location" EntitySet="Locations" />
+      <End Role="Reservation" EntitySet="Reservations" />
+    </AssociationSet>
+    <AssociationSet Name="ReservationClient" Association="Model.ReservationClient">
+      <End Role="Reservation" EntitySet="Reservations" />
+      <End Role="Client" EntitySet="Clients" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Agence">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="rs" Type="String" Nullable="false" />
+    <Property Name="ville" Type="String" Nullable="false" />
+    <Property Name="tel" Type="String" Nullable="false" />
+    <Property Name="login" Type="String" Nullable="false" />
+    <Property Name="password" Type="String" Nullable="false" />
+    <NavigationProperty Name="Voiture" Relationship="Model.AgenceVoiture" FromRole="Agence" ToRole="Voiture" />
+  </EntityType>
+  <EntityType Name="Reservation">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="date_debut" Type="DateTime" Nullable="false" />
+    <Property Name="date_fin" Type="DateTime" Nullable="false" />
+    <Property Name="valid" Type="Byte" Nullable="false" />
+    <NavigationProperty Name="Voiture" Relationship="Model.ReservationVoiture" FromRole="Reservation" ToRole="Voiture" />
+    <Property Name="VoitureId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Location" Relationship="Model.LocationReservation" FromRole="Reservation" ToRole="Location" />
+    <NavigationProperty Name="Client" Relationship="Model.ReservationClient" FromRole="Reservation" ToRole="Client" />
+    <Property Name="ClientId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Marque">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="libelle" Type="String" Nullable="false" />
+    <NavigationProperty Name="Series" Relationship="Model.SerieMarque" FromRole="Marque" ToRole="Serie" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="date_debut" Type="DateTime" Nullable="false" />
+    <Property Name="date_retour" Type="DateTime" Nullable="false" />
+    <Property Name="kilometrage" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Reservation" Relationship="Model.LocationReservation" FromRole="Location" ToRole="Reservation" />
+  </EntityType>
+  <EntityType Name="Client">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nom" Type="String" Nullable="false" />
+    <Property Name="prenom" Type="String" Nullable="false" />
+    <Property Name="cin" Type="String" Nullable="false" />
+    <Property Name="tel" Type="String" Nullable="false" />
+    <Property Name="login" Type="String" Nullable="false" />
+    <Property Name="password" Type="String" Nullable="false" />
+    <NavigationProperty Name="Reservations" Relationship="Model.ReservationClient" FromRole="Client" ToRole="Reservation" />
+  </EntityType>
+  <EntityType Name="Voiture">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="matricule" Type="String" Nullable="false" />
+    <Property Name="prix_jour" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Agence" Relationship="Model.AgenceVoiture" FromRole="Voiture" ToRole="Agence" />
+    <Property Name="AgenceId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Serie" Relationship="Model.VoitureSerie" FromRole="Voiture" ToRole="Serie" />
+    <Property Name="SerieId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Reservations" Relationship="Model.ReservationVoiture" FromRole="Voiture" ToRole="Reservation" />
+  </EntityType>
+  <EntityType Name="Serie">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="libelle" Type="String" Nullable="false" />
+    <NavigationProperty Name="Voitures" Relationship="Model.VoitureSerie" FromRole="Serie" ToRole="Voiture" />
+    <NavigationProperty Name="Marque" Relationship="Model.SerieMarque" FromRole="Serie" ToRole="Marque" />
+    <Property Name="MarqueId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <Association Name="AgenceVoiture">
+    <End Type="Model.Agence" Role="Agence" Multiplicity="1" />
+    <End Type="Model.Voiture" Role="Voiture" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Agence">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Voiture">
+        <PropertyRef Name="AgenceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="VoitureSerie">
+    <End Type="Model.Voiture" Role="Voiture" Multiplicity="*" />
+    <End Type="Model.Serie" Role="Serie" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Serie">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Voiture">
+        <PropertyRef Name="SerieId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SerieMarque">
+    <End Type="Model.Serie" Role="Serie" Multiplicity="*" />
+    <End Type="Model.Marque" Role="Marque" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Marque">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Serie">
+        <PropertyRef Name="MarqueId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ReservationVoiture">
+    <End Type="Model.Reservation" Role="Reservation" Multiplicity="*" />
+    <End Type="Model.Voiture" Role="Voiture" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Voiture">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Reservation">
+        <PropertyRef Name="VoitureId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="LocationReservation">
+    <End Type="Model.Location" Role="Location" Multiplicity="0..1" />
+    <End Type="Model.Reservation" Role="Reservation" Multiplicity="1" />
+  </Association>
+  <Association Name="ReservationClient">
+    <End Type="Model.Reservation" Role="Reservation" Multiplicity="*" />
+    <End Type="Model.Client" Role="Client" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Client">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Reservation">
+        <PropertyRef Name="ClientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
